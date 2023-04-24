@@ -39,9 +39,8 @@ def index():
 		session['name'] = form.name.data
 		form.name.data = ''
 		return redirect(url_for('index'))
-	return render_template('index.html', form=form,\
-	 name=session.get('name'), current_time=datetime.utcnow(),\
-	 known=session.get('known', False))
+	return render_template('index.html', form=form, known=session.get('known',False),
+		name=session.get('name'), current_time=datetime.utcnow())
 
 @app.route('/user/<name>')
 def user(name):
@@ -68,7 +67,6 @@ class Role(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(64), unique=True)
 	users = db.relationship('User', backref='role')
-	users = db.relationship('User', backref='role', lazy='dynamic')
 	def __repr__(self):
 		return '<Role %r>' % self.name
 
@@ -80,3 +78,7 @@ class User(db.Model):
 	role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 	def __repr__(self):
 		return '<Role %r>' % self.username
+
+@app.shell_context_processor
+def make_shell_context():
+	return dict(db=db, User=User, Role=Role)
