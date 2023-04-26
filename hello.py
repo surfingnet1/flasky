@@ -21,7 +21,13 @@ boostrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
 Migrate = Migrate(app, db)
-
+app.config['MAIL_SERVER'] = 'smtp.163.com'
+app.config['MAIL_PORT'] = 25
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+from flask_mail import Mail
+mail = Mail(app)
 
 # 使用重定向保存数据到cooike中
 @app.route('/', methods=['GET', 'POST'])
